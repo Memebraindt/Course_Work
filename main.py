@@ -13,31 +13,31 @@ dp = Dispatcher(bot)
 # Создаём словарь и сохраняем в него пользователей из файла
 # users = {}
 users = load_users()
-# users2 = {}
 print(users)
+print_all(users)
 
 
-# Хэндлер для обработки команды старт
 @dp.message_handler(commands=['start'])
 async def start_command(message: types.Message):
-    # Проверка есть ли пользователь в словаре(dictionary):
-    if message.from_user.id not in users:
-        # Если пользователя нет, создаём новый объект пользователя и добавляем в словарь.
-        user = User(message.from_user.id, message.from_user.first_name,
-                    message.from_user.username, message.from_user.last_name,
-                    "First_Name", "Middle_name", "Last_name")
+    if message.from_user.id not in users.keys():
+        user = User(str(message.from_user.id), message.from_user.first_name,
+                    message.from_user.username,  # message.from_user.last_name,
+                    " " * 11, " " * 9, " " * 13)
         users[message.from_user.id] = user
         save_users(users)
+    # else:
+    #     Check_and_update()
     await bot.send_message(message.chat.id, "Приветствую")
-    await bot.send_message(message.chat.id, " Возможные команды: /help ...")
+    await bot.send_message(message.chat.id, "Возможные команды: /help /print_all")
 
 
 @dp.message_handler(content_types=['text'])
 async def text(message: types.Message):
-    mfi = message.from_user.id
+    print(message)
+    mfi = int(message.from_user.id)
     mt = message.text
     mci = message.chat.id
-    print(f"{users[mfi].get_name()}[id{mfi: >10}] напечатал: \n{mt}")
+    # print(f"{users[mfi].get_name()}[id{mfi: >10}] напечатал: \n{mt}")
     if mt == "/print_all":
         print_all(users)
     else:
