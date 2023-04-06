@@ -14,13 +14,14 @@ def load_users():
 def print_all(users):
     fs = lambda stroka, dlina: f"{stroka:_^{dlina}}|"
     print(fs("Id", 10) + fs("Name", 10) + fs("Username", 18) + fs("Фамилия", 11) + fs("Имя", 9) + fs("Отчество",
-                                                                                                     13))
+                                                                                                     13) + "sf|")
     for user in users:
         print(users[user])
 
 
 class User:
-    def __init__(self, user_id, first_name, username, real_last_name, real_first_name, real_middle_name):  # last_name
+    def __init__(self, user_id, first_name, username, real_last_name, real_first_name, real_middle_name,
+                 set_fio):  # last_name
         self.__user_id = user_id
         self.__first_name = first_name
         self.__username = username
@@ -29,16 +30,31 @@ class User:
         self.__real_last_name = real_last_name
         self.__real_first_name = real_first_name
         self.__real_middle_name = real_middle_name
+        self.__set_fio = set_fio
+        # 0 - не установлено, 1 - ожидает установки, 2 - установлено, 3 - установлено, не может быть изменено
 
     def __str__(self):
         fst = lambda stroka, dlina: f"{stroka: <{dlina}}|" if stroka is not None else " " * dlina + "|"
         user_str = fst(self.__user_id, 10) + fst(self.__first_name, 10) + fst(self.__username, 18) + \
-                   fst(self.__real_last_name, 11) + fst(self.__real_first_name, 9) + fst(self.__real_middle_name, 13)
+                   fst(self.__real_last_name, 11) + fst(self.__real_first_name, 9) + \
+                   fst(self.__real_middle_name, 13) + fst(self.__set_fio, 2)
         return user_str
 
     def update_data(self, mf):
         self.__username = mf.username
         self.__first_name = mf.first_name
 
-    def get_name(self):
-        return self.__real_first_name
+    def get_full_name(self):
+        return self.__real_last_name + " " + self.__real_first_name + " " + self.__real_middle_name
+
+    def set_full_name(self, mt):
+        lst = mt.split()
+        self.__real_last_name = str(lst[0]).capitalize()
+        self.__real_first_name = str(lst[1]).capitalize()
+        self.__real_middle_name = str(lst[2]).capitalize()
+
+    def set_fio_mode(self, mode):
+        self.__set_fio = mode
+
+    def get_fio_mode(self):
+        return self.__set_fio

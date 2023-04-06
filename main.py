@@ -22,7 +22,7 @@ def add_new_update_old(mf):
     if mf.id not in users.keys():
         user = User(mf.id, mf.first_name,
                     mf.username,  # mf.last_name,
-                    " " * 11, " " * 9, " " * 13)
+                    " " * 11, " " * 9, " " * 13, 0)
         users[mf.id] = user
         save_users(users)
     else:
@@ -34,19 +34,23 @@ async def start_command(message: types.Message):
     mf = message.from_user
     mci = message.chat.id
     add_new_update_old(mf)
-    await bot.send_message(mci, "Приветствую")
-    await bot.send_message(mci, "Возможные команды: /help /print_all")
+    # await bot.send_message(mci, "Приветствую")
+    await bot.send_message(mci, "Привет!\nЧтобы увидеть возможные команды воспользуйтесь командой: /help")
 
 
 @dp.message_handler(content_types=['text'])
 async def text(message: types.Message):
     mci = message.chat.id
     mf = message.from_user
-    mt = message.text
+    mt = message.text.lower()
     add_new_update_old(mf)
     is_adm_comm = (str(mci) == str(st.admin_id))
     is_bunker_chat = (str(mci) == str(st.bunker_chat_id))
     is_fif_chat = (str(mci) == str(st.fif_chat_id))
+
+    if mci == mf.id:
+        await cm.pm_chat(bot, users, mci, mt)
+
     if is_adm_comm:
         await cm.admin_commands(users, mt)
     elif is_fif_chat:
@@ -55,7 +59,6 @@ async def text(message: types.Message):
         await cm.bunker_commands()
     else:
         await bot.forward_message(st.admin_id, mci, message.message_id)
-        await bot.send_message(mci, mt)
     print(message)
     # print(f"{users[mfi].get_name()}[id{mfi: >10}] напечатал: \n{mt}")
 
