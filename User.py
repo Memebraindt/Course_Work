@@ -36,5 +36,9 @@ class User:
                    fst(self.__real_last_name, 11) + fst(self.__real_first_name, 9) + fst(self.__real_middle_name, 13)
         return user_str
 
+    def update_data(self, mf):
+        self.__username = mf.username
+        self.__first_name = mf.first_name
+
     def get_name(self):
         return self.__real_first_name
