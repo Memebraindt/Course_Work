@@ -6,6 +6,7 @@ class Note:
 
 
 class Schedule:
-    def __init__(self):
-        pass
-
+    def __init__(self, days, pairs, state):
+        self.__days = days
+        self.__pairs = pairs
+        self.__state = state
