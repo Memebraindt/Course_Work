@@ -47,11 +47,16 @@ class User:
     def get_full_name(self):
         return self.__real_last_name + " " + self.__real_first_name + " " + self.__real_middle_name
 
-    def set_full_name(self, mt):
+    def set_full_name(self, bot, mci, mt):
         lst = mt.split()
-        self.__real_last_name = str(lst[0]).capitalize()
-        self.__real_first_name = str(lst[1]).capitalize()
-        self.__real_middle_name = str(lst[2]).capitalize()
+        if len(lst) == 3:
+            self.__real_last_name = str(lst[0]).capitalize()
+            self.__real_first_name = str(lst[1]).capitalize()
+            self.__real_middle_name = str(lst[2]).capitalize()
+            self.set_fio_mode(2)
+            return True
+        else:
+            return False
 
     def set_fio_mode(self, mode):
         self.__set_fio = mode
