@@ -31,7 +31,10 @@ class User:
         self.__real_first_name = real_first_name
         self.__real_middle_name = real_middle_name
         self.__set_fio = set_fio
-        # 0 - не установлено, 1 - ожидает установки, 2 - установлено, 3 - установлено, не может быть изменено
+        # 0 - не установлено,
+        # 1 - ожидает установки,
+        # 2 - установлено, может быть изменено,
+        # 3 - установлено, не может быть изменено
 
     def __str__(self):
         fst = lambda stroka, dlina: f"{stroka: <{dlina}}|" if stroka is not None else " " * dlina + "|"

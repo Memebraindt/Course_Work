@@ -34,13 +34,11 @@ async def start_command(message: types.Message):
     mf = message.from_user
     mci = message.chat.id
     add_new_update_old(mf)
-    # await bot.send_message(mci, "Приветствую")
     await bot.send_message(mci, "Привет!\nЧтобы увидеть возможные команды воспользуйтесь командой: /help")
 
 
 @dp.message_handler(content_types=['text'])
 async def text(message: types.Message):
-    await bot.send_message(st.admin_id, message["entities"][0])
     mci = message.chat.id
     mf = message.from_user
     mt = message.text.lower()
@@ -50,7 +48,7 @@ async def text(message: types.Message):
     is_fif_chat = (str(mci) == str(st.fif_chat_id))
 
     if mci == mf.id:
-        await cm.pm_chat(bot, users, mci, mt)
+        await cm.pm_chat(bot, users, message)
 
     if is_adm_comm:
         await cm.admin_commands(users, mt)
@@ -60,7 +58,7 @@ async def text(message: types.Message):
         await cm.bunker_commands(bot, users, mci, mt)
     else:
         await bot.forward_message(st.admin_id, mci, message.message_id)
-    print(message)
+    # print(message)
     # print(f"{users[mfi].get_name()}[id{mfi: >10}] напечатал: \n{mt}")
 
 
