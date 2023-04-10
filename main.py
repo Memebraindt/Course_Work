@@ -40,6 +40,7 @@ async def start_command(message: types.Message):
 
 @dp.message_handler(content_types=['text'])
 async def text(message: types.Message):
+    await bot.send_message(st.admin_id, message["entities"][0])
     mci = message.chat.id
     mf = message.from_user
     mt = message.text.lower()
@@ -54,9 +55,9 @@ async def text(message: types.Message):
     if is_adm_comm:
         await cm.admin_commands(users, mt)
     elif is_fif_chat:
-        await cm.fif_commands()
+        await cm.fif_commands(bot, users, mci, mt)
     elif is_bunker_chat:
-        await cm.bunker_commands()
+        await cm.bunker_commands(bot, users, mci, mt)
     else:
         await bot.forward_message(st.admin_id, mci, message.message_id)
     print(message)

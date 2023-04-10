@@ -1,5 +1,6 @@
 # import settings as st
 from User import *
+import time
 
 
 async def pm_chat(bot, users, mci, mt):
@@ -20,7 +21,9 @@ async def pm_chat(bot, users, mci, mt):
                                     "/who_am_I или /кто_я - Выводит данные о вас\n"
                                     "[TBA]/say_my_name - Выводит ваши ФИО\n"
                                     "/print_all - админская команда, выводит всю базу в консоль\n"
-                                    "/help - показывает список команд\n")
+                                    "/help - показывает список команд\n"
+                                    "/date - Дата\n"
+                                    "/time - время\n")
     elif mt[:7] == "/add_me":
         if gfm == 3:
             await bot.send_message(mci, f"Я вас уже знаю, вы - {FIO}")
@@ -34,6 +37,9 @@ async def pm_chat(bot, users, mci, mt):
             await bot.send_message(mci, "Вы - " + FIO)
             if gfm == 2:
                 await bot.send_message(mci, "Если хотите изменить ФИО, введите /add_me")
+    elif mt[:5] == "/time":
+        tm = time.strftime("%H:%M:%S")
+        await bot.send_message(mci, f"{tm}")
     else:
         await bot.send_message(mci, "Выполняю " + mt)
 
@@ -45,11 +51,15 @@ async def admin_commands(users, mt):
     pass
 
 
-async def fif_commands():
+async def fif_commands(bot, users, mci, mt):
+    if mt[:5] == "/help":
+        await bot.send_message(mci, "Список команд: \n")
 
     pass
 
 
-async def bunker_commands():
+async def bunker_commands(bot, users, mci, mt):
+    if mt[:5] == "/help":
+        await bot.send_message(mci, "Список команд: \n")
 
     pass
