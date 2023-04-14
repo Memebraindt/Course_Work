@@ -21,11 +21,10 @@ def print_all(users):
 
 class User:
     def __init__(self, user_id, first_name, username, real_last_name, real_first_name, real_middle_name,
-                 set_fio):  # last_name
+                 set_fio):
         self.__user_id = user_id
         self.__first_name = first_name
         self.__username = username
-        # self.__last_name = last_name
         # ========================================
         self.__real_last_name = real_last_name
         self.__real_first_name = real_first_name
@@ -50,7 +49,7 @@ class User:
     def get_full_name(self):
         return self.__real_last_name + " " + self.__real_first_name + " " + self.__real_middle_name
 
-    def set_full_name(self, bot, mci, mt):
+    def set_full_name(self, mt):
         lst = mt.split()
         if len(lst) == 3:
             self.__real_last_name = str(lst[0]).capitalize()
