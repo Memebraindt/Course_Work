@@ -27,6 +27,7 @@ def add_new_update_old(mf):
         save_users(users)
     else:
         users[mf.id].update_data(mf)
+        save_users(users)
 
 
 @dp.message_handler(commands=['start'])

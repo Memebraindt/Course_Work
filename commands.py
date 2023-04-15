@@ -13,6 +13,7 @@ async def pm_help(*args):
                                 "/help - показывает список команд\n"
                                 "/who_am_I - Выводит данные о вас\n"
                                 "/add_me - Позволяет записать ваши ФИО в БД\n"
+                                "/now - что сейчас?\n"
                                 "/time - Текущее время\n"
                                 "/date - Текущая дата\n"
                                 "/week - Какая неделя?\n"
@@ -27,10 +28,11 @@ async def fif_help(*args):
                                 "===== Для чата ФИФ 2.2 =====\n"
                                 "/start\n"
                                 "/help\n"
-                                "/week - какая сегодня неделя?\n"
+                                "/now - что сейчас?\n"
+                                "/week - какая неделя?\n"
                                 "/today - выводит расписание на сегодня\n"
                                 "/tomorrow - выводит расписание на завтра\n"
-                                "/say_my_name - выводит ваши ФИО\n")
+                                "/say_my_name - выводит ФИО\n")
 
 
 async def add_me(*args):
@@ -96,10 +98,15 @@ async def get_schedule(*args):
     f = ""
     for key in st.fif_schedule[day].keys():
         stroka = st.fif_schedule[day][key]
+        if key is None:
+            await bot.send_message(mci, "`Пар нет`", parse_mode="MarkdownV2")
+            return
         if not week and len(stroka) == 2:
             stroka = stroka[1]
         else:
             stroka = stroka[0]
+        if stroka == "":
+            stroka = "Нет пары"
         f += f"`{key}. {stroka}`\n"
     await bot.send_message(mci, f, parse_mode="MarkdownV2")
 
@@ -116,22 +123,20 @@ async def what_is_now(*args):
     para = 0
     if "08:30:00" <= cur_time < "10:05:00":
         para = 1
-    elif "10:05:00" <= cur_time < "11:55:00":
+    elif "10:15:00" <= cur_time < "11:55:00":
         para = 2
-    elif "11:55:00" <= cur_time < "13:55:00":
+    elif "12:15:00" <= cur_time < "13:55:00":
         para = 3
-    elif "13:55:00" <= cur_time < "15:45:00":
+    elif "14:05:00" <= cur_time < "15:45:00":
         para = 4
     elif "15:45:00" <= cur_time <= "23:59:59" or "00:00:00" <= cur_time <= "08:29:59":
         para = 5
-    if para == 5:
         await bot.send_message(mci, f"Отдых")
-    elif para == 0:
+
+    if para == 0:
         await bot.send_message(mci, f"Перерыв")
-    else:
-        await bot.send_message(mci, f"{para} пара")
     f = ""
-    if para != 0 and 0 < para < 5:
+    if 0 < para < 5:
         if para in st.fif_schedule[day].keys():
             stroka = st.fif_schedule[day][para]
         else:
@@ -156,10 +161,12 @@ async def send_week(*args):
 
 rasp_time_ = [["00:00:00", "08:30:00", "10:20:00", "12:20:00", "14:10:00", "16:00:00"],
               ["08:29:59", "10:05:00", "11:55:00", "13:55:00", "15:45:00", "23:59:59"]]
+
 pm_commands = ["/help", "/who_am_i", "/add_me", "/time", "/date", "/today", "/tomorrow", "/week", "/now"]
 pm_func = [pm_help, who_am_i, add_me, get_time, get_date, get_schedule, get_schedule, send_week, what_is_now]
-fif_commands = ["/help", "/say_my_name", "/today", "/tomorrow", "/week"]
-fif_func = [fif_help, who_am_i, get_schedule, get_schedule, send_week]
+
+fif_commands = ["/help", "/say_my_name", "/today", "/tomorrow", "/week", "/now"]
+fif_func = [fif_help, who_am_i, get_schedule, get_schedule, send_week, what_is_now]
 
 
 def find_command(message):

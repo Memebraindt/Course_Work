@@ -13,7 +13,7 @@ def load_users():
 
 def print_all(users):
     fs = lambda stroka, dlina: f"{stroka:_^{dlina}}|"
-    print(fs("Id", 10) + fs("Name", 10) + fs("Username", 18) + fs("Фамилия", 11) + fs("Имя", 9) + fs("Отчество",
+    print(fs("Id", 10) + fs("Name", 12) + fs("Username", 18) + fs("Фамилия", 11) + fs("Имя", 9) + fs("Отчество",
                                                                                                      13) + "sf|")
     for user in users:
         print(users[user])
@@ -37,7 +37,7 @@ class User:
 
     def __str__(self):
         fst = lambda stroka, dlina: f"{stroka: <{dlina}}|" if stroka is not None else " " * dlina + "|"
-        user_str = fst(self.__user_id, 10) + fst(self.__first_name, 10) + fst(self.__username, 18) + \
+        user_str = fst(self.__user_id, 10) + fst(self.__first_name, 12) + fst(self.__username, 18) + \
                    fst(self.__real_last_name, 11) + fst(self.__real_first_name, 9) + \
                    fst(self.__real_middle_name, 13) + fst(self.__set_fio, 2)
         return user_str
