@@ -83,7 +83,7 @@ def get_day():
 
 
 def get_week():
-    return ((time.localtime(time.time()).tm_yday - 1) // 7 + 1) % 2
+    return ((time.localtime(time.time()).tm_yday - 2) // 7 + 1) % 2
 
 
 async def get_schedule(*args):
@@ -91,9 +91,11 @@ async def get_schedule(*args):
     mci = args[2].chat.id
     command = args[3]
     day = get_day()
+    week = get_week()
     if command == "/tomorrow":
         day = (day+1) % 7
-    week = get_week()
+        if day == 0:
+            week = 1 - week
     await bot.send_message(mci, st.wday[day])
     f = ""
     for key in st.fif_schedule[day].keys():
