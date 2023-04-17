@@ -56,9 +56,12 @@ async def text(message: types.Message):
 
     if is_admin:
         await cm.admin_chat(bot, users, message)
+        forward_flag = True
     elif is_fif_chat:
         await cm.fif_chat(bot, users, message)
-    elif not forward_flag:
+        forward_flag = True
+
+    if not forward_flag:
         await bot.forward_message(st.admin_id, mci, message.message_id)
         await bot.send_message(st.admin_id, str(message))
 
