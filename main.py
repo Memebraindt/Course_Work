@@ -18,6 +18,18 @@ print(users)
 # print_all(users)
 
 
+async def default(*args):
+    message = args[2]
+    print("default - ", args)
+    await bot.forward_message(st.admin_id, message.chat.id, message.message_id)
+    await bot.send_message(st.admin_id, str(message))
+
+chats = {"admin": cm.admin_chat,
+         "FIF2.2": cm.fif_chat,
+         "PM": cm.pm_chat,
+         "default": default}
+
+
 def add_new_update_old(mf):
     if mf.id not in users.keys():
         user = User(mf.id, mf.first_name,
@@ -40,30 +52,36 @@ async def start_command(message: types.Message):
 
 @dp.message_handler(content_types=['text'])
 async def text(message: types.Message):
-    forward_flag = False
+    # forward_flag = False
     mci = message.chat.id
     mf = message.from_user
     # mt = message.text.lower()
     add_new_update_old(mf)
-    is_admin = (str(mci) == str(st.admin_id))
-    is_fif_chat = (str(mci) == str(st.fif_chat_id))
+    key = "default"
+    if str(mci) == str(st.admin_id):
+        key = "admin"
+    elif str(mci) == str(st.fif_chat_id):
+        key = "FIF2.2"
+    elif int(mci) == int(mf.id):
+        key = "PM"
 
-    if mci == mf.id:
-        await cm.pm_chat(bot, users, message)
-        if not is_admin:
-            await bot.forward_message(st.admin_id, mci, message.message_id)
-            forward_flag = True
+    await chats[key](bot, users, message)
+    #
+    # if is_admin:
+    #     await cm.admin_chat(bot, users, message)
+    #     forward_flag = True
+    # if mci == mf.id:
+    #     await cm.pm_chat(bot, users, message)
+    #     if not is_admin:
+    #         await bot.forward_message(st.admin_id, mci, message.message_id)
+    #         forward_flag = True
+    # elif is_fif_chat:
+    #     await cm.fif_chat(bot, users, message)
+    #     forward_flag = True
 
-    if is_admin:
-        await cm.admin_chat(bot, users, message)
-        forward_flag = True
-    elif is_fif_chat:
-        await cm.fif_chat(bot, users, message)
-        forward_flag = True
-
-    if not forward_flag:
-        await bot.forward_message(st.admin_id, mci, message.message_id)
-        await bot.send_message(st.admin_id, str(message))
+    # if not forward_flag:
+    #     await bot.forward_message(st.admin_id, mci, message.message_id)
+    #     await bot.send_message(st.admin_id, str(message))
 
     # else:
     #     await bot.forward_message(st.admin_id, mci, message.message_id)

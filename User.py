@@ -11,7 +11,8 @@ def load_users():
         return pickle.load(file)
 
 
-def print_all(users):
+async def print_all(*args):
+    users = args[1]
     fs = lambda stroka, dlina: f"{stroka:_^{dlina}}|"
     print(fs("Id", 10) + fs("Name", 12) + fs("Username", 18) + fs("Фамилия", 11) + fs("Имя", 9) + fs("Отчество",
                                                                                                      13) + "f|")
@@ -50,8 +51,13 @@ class User:
         return self.__real_last_name + " " + self.__real_first_name + " " + self.__real_middle_name
 
     def set_full_name(self, mt):
+        check_str = all(c == " " or "а" <= c <= "я" for c in mt)
+        print(check_str)
+        # regex = "^[а-яА-ЯёЁ ]+$"
+        # pattern = re.compile(regex)
+        # print(pattern.search(mt) is not None)
         lst = mt.split()
-        if len(lst) == 3:
+        if len(lst) == 3 and check_str:
             self.__real_last_name = str(lst[0]).capitalize()
             self.__real_first_name = str(lst[1]).capitalize()
             self.__real_middle_name = str(lst[2]).capitalize()

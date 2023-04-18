@@ -11,14 +11,9 @@ async def pm_help(*args):
                                 "===== Для Личных сообщений =====\n"
                                 "/start - начать взаимодействие с ботом\n"
                                 "/help - показывает список команд\n"
-                                "/who_am_I - Выводит данные о вас\n"
-                                "/add_me - Позволяет записать ваши ФИО в БД\n"
-                                "/now - что сейчас?\n"
-                                "/time - Текущее время\n"
-                                "/date - Текущая дата\n"
-                                "/week - Какая неделя?\n"
-                                "/today - расписание на сегодня\n"
-                                "/tomorrow - расписание на завтра\n")
+                                "/who_am_I - Выводит ваши ФИО\n"
+                                "/add_me - Позволяет записать ваши ФИО\n"
+                                "/week - Какая неделя?\n")
 
 
 async def fif_help(*args):
@@ -33,6 +28,23 @@ async def fif_help(*args):
                                 "/today - выводит расписание на сегодня\n"
                                 "/tomorrow - выводит расписание на завтра\n"
                                 "/say_my_name - выводит ФИО\n")
+
+
+async def admin_help(*args):
+    bot = args[0]
+    mfi = args[2].from_user.id
+    await bot.send_message(mfi, "Список команд: \n"
+                                "===== Для админа =====\n"
+                                "/help - показывает список команд\n"
+                                "/print_all - выводит всю БД в консоль\n"
+                                "/time - Текущее время\n"
+                                "/date - Текущая дата\n"
+                                "/who_am_i - выводит ФИО\n"
+                                "/add_me - запоминает ФИО\n"
+                                "/now - что сейчас?\n"
+                                "/today - расписание на сегодня\n"
+                                "/tomorrow - расписание на завтра\n"
+                                "/week - какая неделя?\n")
 
 
 async def add_me(*args):
@@ -157,18 +169,29 @@ async def send_week(*args):
     mci = args[2].chat.id
     gw = get_week()
     if gw == 1:
-        await bot.send_message(mci, "Числитель, верхняя, нечёт")
+        await bot.send_message(mci, "Верхняя, нечётная")
     else:
-        await bot.send_message(mci, "Знаменатель, нижняя, чёт")
+        await bot.send_message(mci, "Нижняя, чётная")
 
-rasp_time_ = [["00:00:00", "08:30:00", "10:20:00", "12:20:00", "14:10:00", "16:00:00"],
-              ["08:29:59", "10:05:00", "11:55:00", "13:55:00", "15:45:00", "23:59:59"]]
+# rasp_time_ = [["00:00:00", "08:30:00", "10:20:00", "12:20:00", "14:10:00", "16:00:00"],
+#               ["08:29:59", "10:05:00", "11:55:00", "13:55:00", "15:45:00", "23:59:59"]]
 
-pm_commands = ["/help", "/who_am_i", "/add_me", "/time", "/date", "/today", "/tomorrow", "/week", "/now"]
-pm_func = [pm_help, who_am_i, add_me, get_time, get_date, get_schedule, get_schedule, send_week, what_is_now]
+pm_commands = ["/help", "/who_am_i", "/add_me", "/week"]
+pm_func = [pm_help, who_am_i, add_me, send_week]
 
 fif_commands = ["/help", "/say_my_name", "/today", "/tomorrow", "/week", "/now"]
 fif_func = [fif_help, who_am_i, get_schedule, get_schedule, send_week, what_is_now]
+
+admin_commands = {"/help": admin_help,
+                  "/print_all": print_all,
+                  "/date": get_date,
+                  "/time": get_time,
+                  "/who_am_i": who_am_i,
+                  "/add_me": add_me,
+                  "/now": what_is_now,
+                  "/today": get_schedule,
+                  "/tomorrow": get_schedule,
+                  "/week": send_week}
 
 
 def find_command(message):
@@ -195,7 +218,7 @@ async def write_new_name(bot, users, message):
     mci = message.chat.id
     mt = message.text
     mfi = message.from_user.id
-    if users[mfi].set_full_name(mt):
+    if users[mfi].set_full_name(mt.lower()):
         save_users(users)
         await bot.send_message(mci, "Данные успешно записаны")
     else:
@@ -223,11 +246,13 @@ async def pm_chat(bot, users, message):
 
 
 async def admin_chat(bot, users, message):
-    mt = message.text
-    if mt == "/print_all":
-        print_all(users)
+    if users[message.from_user.id].get_fio_mode() == 1:
+        await write_new_name(bot, users, message)
+        return
 
-    pass
+    command = find_command(message)
+    if command is not None and command in admin_commands.keys():
+        await admin_commands[command](bot, users, message, command)
 
 
 async def fif_chat(bot, users, message):
