@@ -179,8 +179,12 @@ async def send_week(*args):
 pm_commands = ["/help", "/who_am_i", "/add_me", "/week"]
 pm_func = [pm_help, who_am_i, add_me, send_week]
 
-fif_commands = ["/help", "/say_my_name", "/today", "/tomorrow", "/week", "/now"]
-fif_func = [fif_help, who_am_i, get_schedule, get_schedule, send_week, what_is_now]
+fif_commands = {"/help": fif_help,
+                "/say_my_name": who_am_i,
+                "/today": get_schedule,
+                "/tomorrow": get_schedule,
+                "/week": send_week,
+                "/now": what_is_now}
 
 admin_commands = {"/help": admin_help,
                   "/print_all": print_all,
@@ -227,7 +231,6 @@ async def write_new_name(bot, users, message):
 
 async def pm_chat(bot, users, message):
     mci = message.chat.id
-    mt = message.text
     gfm = users[mci].get_fio_mode()
 
     command = find_command(message)
@@ -256,11 +259,13 @@ async def admin_chat(bot, users, message):
 
 
 async def fif_chat(bot, users, message):
-    mci = message.chat.id
-    mt = message.text
     command = find_command(message)
     print(command)
-    for i in range(len(fif_commands)):
-        if command == fif_commands[i]:
-            await fif_func[i](bot, users, message, command)
-            return
+    if command is not None and command in fif_commands.keys():
+        await fif_commands[command](bot, users, message, command)
+
+    #
+    # for i in range(len(fif_commands)):
+    #     if command == fif_commands[i]:
+    #         await fif_func[i](bot, users, message, command)
+    #         return

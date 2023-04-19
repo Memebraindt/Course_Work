@@ -15,7 +15,6 @@ dp = Dispatcher(bot)
 # users = {}
 users = load_users()
 print(users)
-# print_all(users)
 
 
 async def default(*args):
@@ -52,10 +51,8 @@ async def start_command(message: types.Message):
 
 @dp.message_handler(content_types=['text'])
 async def text(message: types.Message):
-    # forward_flag = False
     mci = message.chat.id
     mf = message.from_user
-    # mt = message.text.lower()
     add_new_update_old(mf)
     key = "default"
     if str(mci) == str(st.admin_id):
@@ -66,25 +63,7 @@ async def text(message: types.Message):
         key = "PM"
 
     await chats[key](bot, users, message)
-    #
-    # if is_admin:
-    #     await cm.admin_chat(bot, users, message)
-    #     forward_flag = True
-    # if mci == mf.id:
-    #     await cm.pm_chat(bot, users, message)
-    #     if not is_admin:
-    #         await bot.forward_message(st.admin_id, mci, message.message_id)
-    #         forward_flag = True
-    # elif is_fif_chat:
-    #     await cm.fif_chat(bot, users, message)
-    #     forward_flag = True
 
-    # if not forward_flag:
-    #     await bot.forward_message(st.admin_id, mci, message.message_id)
-    #     await bot.send_message(st.admin_id, str(message))
-
-    # else:
-    #     await bot.forward_message(st.admin_id, mci, message.message_id)
     # print(message)
     # print(f"{users[mfi].get_name()}[id{mfi: >10}] напечатал: \n{mt}")
 
