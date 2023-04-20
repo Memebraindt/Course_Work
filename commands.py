@@ -34,17 +34,19 @@ async def admin_help(*args):
     bot = args[0]
     mfi = args[2].from_user.id
     await bot.send_message(mfi, "Список команд: \n"
-                                "===== Для админа =====\n"
+                                "===== общие команды =====\n"
                                 "/help - показывает список команд\n"
-                                "/print_all - выводит всю БД в консоль\n"
-                                "/time - Текущее время\n"
-                                "/date - Текущая дата\n"
                                 "/who_am_i - выводит ФИО\n"
                                 "/add_me - запоминает ФИО\n"
                                 "/now - что сейчас?\n"
                                 "/today - расписание на сегодня\n"
                                 "/tomorrow - расписание на завтра\n"
-                                "/week - какая неделя?\n")
+                                "/week - какая неделя?\n"
+                                "===== для админа ====="
+                                "/date - Текущая дата\n"
+                                "/time - Текущее время\n"
+                                "/print_all - выводит всю БД в консоль\n"
+                                "/change_all N - меняет флаг у всех пользователей на N(int)\n")
 
 
 async def add_me(*args):
@@ -173,30 +175,6 @@ async def send_week(*args):
     else:
         await bot.send_message(mci, "Нижняя, чётная")
 
-# rasp_time_ = [["00:00:00", "08:30:00", "10:20:00", "12:20:00", "14:10:00", "16:00:00"],
-#               ["08:29:59", "10:05:00", "11:55:00", "13:55:00", "15:45:00", "23:59:59"]]
-
-pm_commands = ["/help", "/who_am_i", "/add_me", "/week"]
-pm_func = [pm_help, who_am_i, add_me, send_week]
-
-fif_commands = {"/help": fif_help,
-                "/say_my_name": who_am_i,
-                "/today": get_schedule,
-                "/tomorrow": get_schedule,
-                "/week": send_week,
-                "/now": what_is_now}
-
-admin_commands = {"/help": admin_help,
-                  "/print_all": print_all,
-                  "/date": get_date,
-                  "/time": get_time,
-                  "/who_am_i": who_am_i,
-                  "/add_me": add_me,
-                  "/now": what_is_now,
-                  "/today": get_schedule,
-                  "/tomorrow": get_schedule,
-                  "/week": send_week}
-
 
 def find_command(message):
     command = ""
@@ -227,6 +205,46 @@ async def write_new_name(bot, users, message):
         await bot.send_message(mci, "Данные успешно записаны")
     else:
         await bot.send_message(mci, "Неправильно, попробуй ещё раз")
+
+
+async def change_flag_4_all(*args):
+    bot = args[0]
+    users = args[1]
+    text = args[2]
+    mci = text.chat.id
+    lst = text.text.split()
+    mode = int(lst[1])
+    for key in users.keys():
+        users[key].set_fio_mode(mode)
+    save_users(users)
+    await bot.send_message(mci, "Готово")
+
+
+# rasp_time_ = [["00:00:00", "08:30:00", "10:20:00", "12:20:00", "14:10:00", "16:00:00"],
+#               ["08:29:59", "10:05:00", "11:55:00", "13:55:00", "15:45:00", "23:59:59"]]
+
+pm_commands = ["/help", "/who_am_i", "/add_me", "/week"]
+pm_func = [pm_help, who_am_i, add_me, send_week]
+
+fif_commands = {"/help": fif_help,
+                "/say_my_name": who_am_i,
+                "/today": get_schedule,
+                "/tomorrow": get_schedule,
+                "/week": send_week,
+                "/now": what_is_now}
+
+admin_commands = {"/help": admin_help,
+                  "/who_am_i": who_am_i,
+                  "/add_me": add_me,
+                  "/now": what_is_now,
+                  "/today": get_schedule,
+                  "/tomorrow": get_schedule,
+                  "/week": send_week,
+                    # админские команды
+                  "/date": get_date,
+                  "/time": get_time,
+                  "/print_all": print_all,
+                  "/change_all": change_flag_4_all}
 
 
 async def pm_chat(bot, users, message):
@@ -263,9 +281,3 @@ async def fif_chat(bot, users, message):
     print(command)
     if command is not None and command in fif_commands.keys():
         await fif_commands[command](bot, users, message, command)
-
-    #
-    # for i in range(len(fif_commands)):
-    #     if command == fif_commands[i]:
-    #         await fif_func[i](bot, users, message, command)
-    #         return
