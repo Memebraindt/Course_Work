@@ -42,9 +42,9 @@ async def admin_help(*args):
                                 "/today - расписание на сегодня\n"
                                 "/tomorrow - расписание на завтра\n"
                                 "/week - какая неделя?\n"
-                                "===== для админа ====="
-                                "/date - Текущая дата\n"
+                                "===== для админа =====\n"
                                 "/time - Текущее время\n"
+                                "/date - Текущая дата\n"
                                 "/print_all - выводит всю БД в консоль\n"
                                 "/change_all N - меняет флаг у всех пользователей на N(int)\n")
 
@@ -107,7 +107,7 @@ async def get_schedule(*args):
     day = get_day()
     week = get_week()
     if command == "/tomorrow":
-        day = (day+1) % 7
+        day = (day + 1) % 7
         if day == 0:
             week = 1 - week
     await bot.send_message(mci, st.wday[day])
@@ -133,7 +133,7 @@ async def what_is_now(*args):
     command = args[3]
     day = get_day()
     if command == "/tomorrow":
-        day = (day+1) % 7
+        day = (day + 1) % 7
     week = get_week()
     cur_time = str(time.strftime("%H:%M:%S"))
     para = 0
@@ -223,8 +223,10 @@ async def change_flag_4_all(*args):
 # rasp_time_ = [["00:00:00", "08:30:00", "10:20:00", "12:20:00", "14:10:00", "16:00:00"],
 #               ["08:29:59", "10:05:00", "11:55:00", "13:55:00", "15:45:00", "23:59:59"]]
 
-pm_commands = ["/help", "/who_am_i", "/add_me", "/week"]
-pm_func = [pm_help, who_am_i, add_me, send_week]
+pm_commands = {"/help": pm_help,
+               "/who_am_i": who_am_i,
+               "/add_me": add_me,
+               "/week": send_week}
 
 fif_commands = {"/help": fif_help,
                 "/say_my_name": who_am_i,
@@ -240,7 +242,7 @@ admin_commands = {"/help": admin_help,
                   "/today": get_schedule,
                   "/tomorrow": get_schedule,
                   "/week": send_week,
-                    # админские команды
+                  # админские команды
                   "/date": get_date,
                   "/time": get_time,
                   "/print_all": print_all,
@@ -249,21 +251,20 @@ admin_commands = {"/help": admin_help,
 
 async def pm_chat(bot, users, message):
     mci = message.chat.id
-    gfm = users[mci].get_fio_mode()
-
     command = find_command(message)
     print(command)
 
-    if gfm == 1:
+    if users[mci].get_fio_mode() == 1:
         await write_new_name(bot, users, message)
         return
 
-    for i in range(len(pm_commands)):
-        if command == pm_commands[i]:
-            await pm_func[i](bot, users, message, command)
-            return
-
-    # await bot.send_message(mci, "Выполняю " + mt)
+    if command is not None and command in pm_commands.keys():
+        await pm_commands[command](bot, users, message, command)
+    #
+    # for i in range(len(pm_commands)):
+    #     if command == pm_commands[i]:
+    #         await pm_func[i](bot, users, message, command)
+    #         return
 
 
 async def admin_chat(bot, users, message):
