@@ -260,11 +260,6 @@ async def pm_chat(bot, users, message):
 
     if command is not None and command in pm_commands.keys():
         await pm_commands[command](bot, users, message, command)
-    #
-    # for i in range(len(pm_commands)):
-    #     if command == pm_commands[i]:
-    #         await pm_func[i](bot, users, message, command)
-    #         return
 
 
 async def admin_chat(bot, users, message):

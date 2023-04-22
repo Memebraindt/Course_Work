@@ -12,7 +12,6 @@ dp = Dispatcher(bot)
 
 
 # Создаём словарь и сохраняем в него пользователей из файла
-# users = {}
 users = load_users()
 print(users)
 
@@ -22,6 +21,7 @@ async def default(*args):
     print("default - ", args)
     await bot.forward_message(st.admin_id, message.chat.id, message.message_id)
     await bot.send_message(st.admin_id, str(message))
+
 
 chats = {"admin": cm.admin_chat,
          "FIF2.2": cm.fif_chat,
@@ -64,8 +64,8 @@ async def text(message: types.Message):
 
     await chats[key](bot, users, message)
 
-    # print(message)
-    # print(f"{users[mfi].get_name()}[id{mfi: >10}] напечатал: \n{mt}")
+    # if message.chat.id is not st.admin_id:
+    #     await bot.forward_message(st.admin_id, message.chat.id, message.message_id)
 
 
 @dp.message_handler(content_types=['photo', 'video', 'sticker', 'document', 'audio', 'animation'])

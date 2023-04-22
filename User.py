@@ -1,5 +1,5 @@
 import pickle
-
+import string
 
 def save_users(users):
     with open("users.pkl", "wb") as file:
@@ -45,7 +45,9 @@ class User:
 
     def update_data(self, mf):
         self.__username = mf.username
-        self.__first_name = mf.first_name
+        fname = "".join(c if c in string.printable else "" for c in mf.first_name)
+        print(fname)
+        self.__first_name = fname
 
     def get_full_name(self):
         return self.__real_last_name + " " + self.__real_first_name + " " + self.__real_middle_name
@@ -53,9 +55,6 @@ class User:
     def set_full_name(self, mt):
         check_str = all(c == " " or "а" <= c <= "я" for c in mt)
         print(check_str)
-        # regex = "^[а-яА-ЯёЁ ]+$"
-        # pattern = re.compile(regex)
-        # print(pattern.search(mt) is not None)
         lst = mt.split()
         if len(lst) == 3 and check_str:
             self.__real_last_name = str(lst[0]).capitalize()
