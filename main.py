@@ -11,7 +11,7 @@ bot = Bot(token=st.token)
 dp = Dispatcher(bot)
 
 
-# Создаём словарь и сохраняем в него пользователей из файла
+# Загружаем в словарь users пользователей из файла
 users = load_users()
 print(users)
 
