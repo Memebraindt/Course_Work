@@ -171,12 +171,12 @@ async def send_week(*args):
     mci = args[2].chat.id
     gw = get_week()
     if gw == 1:
-        await bot.send_message(mci, "Верхняя, нечётная")
+        await bot.send_message(mci, "Верхняя")
     else:
-        await bot.send_message(mci, "Нижняя, чётная")
+        await bot.send_message(mci, "Нижняя")
 
 
-def find_command(message):
+def find_command(message) -> str:
     command = ""
     diff = 0
     if message["entities"] is not None:
