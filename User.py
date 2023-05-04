@@ -2,7 +2,7 @@ import pickle
 import string
 
 
-def save_users(users):
+def save_users(users: dict):
     with open("users.pkl", "wb") as file:
         pickle.dump(users, file)
 
@@ -38,7 +38,7 @@ class User:
         # 3 - установлено, не может быть изменено
 
     def __str__(self) -> str:
-        fst = lambda some_str, dlina: f"{some_str: <{dlina}}|" if some_str is not None else " " * dlina + "|"
+        fst = lambda some_str, str_length: f"{some_str: <{str_length}}|" if some_str is not None else " "*str_length+"|"
         user_str = fst(self.__user_id, 10) + fst(self.__first_name, 12) + fst(self.__username, 18) + \
                    fst(self.__real_last_name, 11) + fst(self.__real_first_name, 9) + \
                    fst(self.__real_middle_name, 13) + fst(self.__set_fio, 1)
@@ -53,8 +53,8 @@ class User:
     def get_full_name(self) -> str:
         return self.__real_last_name + " " + self.__real_first_name + " " + self.__real_middle_name
 
-    def set_full_name(self, mt) -> bool:
-        check_str = all(c == " " or "а" <= c <= "я" for c in mt)
+    def set_full_name(self, mt: str) -> bool:
+        check_str = all(c == " " or "а" <= c <= "я" for c in mt.lower())
         print(check_str, " ", mt)
         lst = mt.split()
         if len(lst) == 3 and check_str:

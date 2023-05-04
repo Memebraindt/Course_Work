@@ -193,14 +193,29 @@ def find_command(message) -> str:
                 break
             elif x["type"] == "custom_emoji":
                 diff += 1
+    print(command)
+    if command == "":
+        res1 = 0
+        res2 = 0
+        mt = message.text.lower()
+        words_list = mt.split()
+        print(words_list)
+        for word in words_list:
+            if word[:6] == "завтра":
+                res1 += 1
+            if word[:3] == "пар" or word[:3] == "что" or word[:5] == "будет":
+                res2 += 1
+        if res1 > 0 and res2 > 0:
+            command = "/tomorrow"
+        print(res1, res2)
+    print(command)
     return command.lower()
 
 
 async def write_new_name(bot, users, message):
     mci = message.chat.id
-    mt = message.text
     mfi = message.from_user.id
-    if users[mfi].set_full_name(mt.lower()):
+    if users[mfi].set_full_name(message.text):
         save_users(users)
         await bot.send_message(mci, "Данные успешно записаны")
     else:
