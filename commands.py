@@ -153,10 +153,9 @@ async def what_is_now(*args):
         await bot.send_message(mci, f"Перерыв")
     f = ""
     if 0 < para < 5:
+        stroka: str = "Пары нет"
         if para in st.fif_schedule[day].keys():
             stroka = st.fif_schedule[day][para]
-        else:
-            stroka = ["Пары нет"]
 
         if not week and len(stroka) == 2:
             stroka = stroka[1]
@@ -179,6 +178,7 @@ async def send_week(*args):
 def find_command(message) -> str:
     command = ""
     diff = 0
+    # print(message)
     if message["entities"] is not None:
         ent = message["entities"]
         for x in ent:
@@ -193,22 +193,25 @@ def find_command(message) -> str:
                 break
             elif x["type"] == "custom_emoji":
                 diff += 1
-    print(command)
     if command == "":
         res1 = 0
         res2 = 0
         mt = message.text.lower()
         words_list = mt.split()
         print(words_list)
+        comm = ""
+        com_dict = {"завтра": "/tomorrow",
+                    "сегодн": "/today",
+                    "сейчас": "/now"}
         for word in words_list:
-            if word[:6] == "завтра":
+            if word[:6] in com_dict.keys():
                 res1 += 1
+                comm = com_dict[word[:6]]
             if word[:3] == "пар" or word[:3] == "что" or word[:5] == "будет":
                 res2 += 1
         if res1 > 0 and res2 > 0:
-            command = "/tomorrow"
+            command = comm
         print(res1, res2)
-    print(command)
     return command.lower()
 
 
